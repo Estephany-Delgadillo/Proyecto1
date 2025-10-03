@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Usuarios Registrados</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border: 1px solid #ddd; }
+    h1 { margin-bottom: 20px; color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #f5f5f5; }
+    .btn-delete { padding: 6px 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .vacio { text-align: center; color: #777; padding: 20px; }
+    .back { color: #0056b3; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <!--
+    Muestra todos los usuarios registrados.
+    Incluye funcionalidad de eliminación (CRUD completo).
+    Requisito: "Perfiles de usuario".
+  -->
+  <div class="container">
+    <h1>Usuarios Registrados</h1>
+    <div id="mensaje"></div>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Acciones</th></tr>
+      </thead>
+      <tbody id="cuerpo"></tbody>
+    </table>
+    <a href="menu_usuario.php" class="back">← Regresar al menú</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('http://localhost/tienda_ropa/api/index.php?path=usuarios');
+        const usuarios = await res.json();
+        const tbody = document.getElementById('cuerpo');
+        if (usuarios.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="vacio">No hay usuarios</td></tr>';
+          return;
+        }
+        tbody.innerHTML = usuarios.map(u => `
+          <tr>
+            <td>${u.id}</td>
+            <td>${u.nombre_completo}</td>
+            <td>${u.email}</td>
+            <td><button onclick="eliminar(${u.id})" class="btn-delete">Eliminar</button></td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        document.getElementById('cuerpo').innerHTML = 
+          '<tr><td colspan="4" class="vacio">Error de conexión</td></tr>';
+      }
+    });
+
+    async function eliminar(id) {
+      if (!confirm('¿Eliminar este usuario?')) return;
+      try {
+        const res = await fetch(`http://localhost/tienda_ropa/api/index.php?path=usuarios/${id}`, {
+          method: 'DELETE'
+        });
+        if (res.ok) {
+          alert('Usuario eliminado');
+          location.reload();
+        } else {
+          const data = await res.json();
+          alert('Error: ' + (data.error || 'No se pudo eliminar'));
+        }
+      } catch (e) {
+        alert('Error de red');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda de Ropa Snoopy</title>
+  <style>
+    /* --- Estilos generales del cuerpo --- */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      
+      /* Fondo de imagen */
+      background-image: url('imagen.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-color: #f0f0f0; /* Fallback si la imagen no carga */
+    }
+
+    /* --- Contenedor principal con fondo semitransparente --- */
+    .container {
+      background: rgba(255, 255, 255, 0.92); /* Blanco con ligera transparencia */
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 520px;
+      text-align: center;
+    }
+
+    /* --- Título --- */
+    h1 {
+      margin: 0 0 30px;
+      color: #2c3e50;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    /* --- Botones de acción --- */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      text-decoration: none;
+      color: white;
+      background-color: #2c3e50;
+      border: none;
+      border-radius: 8px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn:hover {
+      background-color: #1a252f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* --- Separador "o" --- */
+    .divider {
+      margin: 25px 0;
+      color: #7f8c8d;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    /* --- Responsive: mejora en móviles --- */
+    @media (max-width: 600px) {
+      .container {
+        padding: 30px 20px;
+        margin: 20px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!--
+    Página de inicio del proyecto.
+    Cumple con el requisito de "uso de formularios" al ofrecer enlaces a funcionalidades CRUD.
+  -->
+  <div class="container">
+    <h1>Tienda de Ropa Snoopy</h1>
+    <a href="registrar_usuario.html" class="btn">Registrar Nuevo Usuario</a>
+    <div class="divider">o</div>
+    <a href="login.html" class="btn">Acceder como Usuario Registrado</a>
+  </div>
+</body>
+</html>

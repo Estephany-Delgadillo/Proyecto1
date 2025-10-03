@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agregar Producto</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+    .form-container { max-width: 600px; margin: 40px auto; background: white; padding: 25px; border: 1px solid #ddd; }
+    h2 { margin-bottom: 20px; color: #333; }
+    label { display: block; margin: 12px 0 4px; font-weight: bold; }
+    input, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 20px; padding: 10px 20px; background: #0056b3; color: white; border: none; cursor: pointer; }
+    #mensaje { margin-top: 15px; padding: 10px; border-radius: 4px; }
+    .exito { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <!--
+    Formulario para crear nuevos productos.
+    Requisito: "Crear productos" (parte del CRUD).
+  -->
+  <div class="form-container">
+    <h2>Agregar Nuevo Producto</h2>
+    <form id="formProducto">
+      <label>Nombre *</label>
+      <input type="text" id="nombre" required>
+      <label>Descripción</label>
+      <textarea id="descripcion"></textarea>
+      <label>Precio *</label>
+      <input type="number" id="precio" step="0.01" min="0.01" required>
+      <label>Talla</label>
+      <input type="text" id="talla">
+      <label>Color</label>
+      <input type="text" id="color">
+      <label>Categoría *</label>
+      <input type="text" id="categoria" required>
+      <button type="submit">Registrar Producto</button>
+    </form>
+    <div id="mensaje"></div>
+    <a href="menu_usuario.php" style="color:#0056b3;">Regresar al menú</a>
+  </div>
+
+  <script>
+    document.getElementById('formProducto').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const datos = {
+        nombre: document.getElementById('nombre').value,
+        descripcion: document.getElementById('descripcion').value,
+        precio: parseFloat(document.getElementById('precio').value),
+        talla: document.getElementById('talla').value,
+        color: document.getElementById('color').value,
+        categoria: document.getElementById('categoria').value
+      };
+      try {
+        const res = await fetch('http://localhost/tienda_ropa/api/index.php?path=productos', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(datos)
+        });
+        const r = await res.json();
+        const m = document.getElementById('mensaje');
+        if (res.ok) {
+          m.className = 'exito';
+          m.textContent = r.mensaje;
+          document.getElementById('formProducto').reset();
+        } else {
+          m.className = 'error';
+          m.textContent = r.error || 'Error desconocido';
+        }
+      } catch (err) {
+        document.getElementById('mensaje').className = 'error';
+        document.getElementById('mensaje').textContent = 'Error de red';
+      }
+    });
+  </script>
+</body>
+</html>

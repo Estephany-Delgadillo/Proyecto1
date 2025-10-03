@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Producto</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+    .form { max-width: 600px; margin: 40px auto; background: white; padding: 25px; border: 1px solid #ddd; }
+    h2 { margin-bottom: 20px; }
+    label { display: block; margin: 12px 0 4px; font-weight: bold; }
+    input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 20px; padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
+    .back { color: #0056b3; text-decoration: none; }
+    #mensaje { margin-top: 15px; padding: 10px; border-radius: 4px; }
+    .error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <!--
+    Formulario para actualizar un producto existente.
+    Requisito: "Actualizar productos" (parte del CRUD).
+  -->
+  <div class="form">
+    <h2>Editar Producto</h2>
+    <form id="form">
+      <input type="hidden" id="id">
+      <label>Nombre *</label>
+      <input type="text" id="nombre" required>
+      <label>Descripción</label>
+      <input type="text" id="descripcion">
+      <label>Precio *</label>
+      <input type="number" id="precio" step="0.01" min="0.01" required>
+      <label>Talla</label>
+      <input type="text" id="talla">
+      <label>Color</label>
+      <input type="text" id="color">
+      <label>Categoría *</label>
+      <input type="text" id="categoria" required>
+      <button type="submit">Actualizar Producto</button>
+    </form>
+    <div id="mensaje"></div>
+    <a href="listar_productos.html" class="back">← Cancelar</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      if (!id) {
+        alert('ID de producto no especificado');
+        window.location = 'listar_productos.html';
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost/tienda_ropa/api/index.php?path=productos/${id}`);
+        if (!res.ok) throw new Error('Producto no encontrado');
+        const p = await res.json();
+        document.getElementById('id').value = p.id;
+        document.getElementById('nombre').value = p.nombre;
+        document.getElementById('descripcion').value = p.descripcion || '';
+        document.getElementById('precio').value = p.precio;
+        document.getElementById('talla').value = p.talla || '';
+        document.getElementById('color').value = p.color || '';
+        document.getElementById('categoria').value = p.categoria || '';
+      } catch (e) {
+        document.getElementById('mensaje').innerHTML = 
+          `<div class="error">Error: ${e.message}</div>`;
+      }
+    });
+
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('id').value;
+      const datos = {
+        nombre: document.getElementById('nombre').value,
+        descripcion: document.getElementById('descripcion').value,
+        precio: parseFloat(document.getElementById('precio').value),
+        talla: document.getElementById('talla').value,
+        color: document.getElementById('color').value,
+        categoria: document.getElementById('categoria').value
+      };
+
+      try {
+        const res = await fetch(`http://localhost/tienda_ropa/api/index.php?path=productos/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos)
+        });
+        if (res.ok) {
+          alert('Producto actualizado exitosamente');
+          window.location = 'listar_productos.html';
+        } else {
+          const r = await res.json();
+          alert('Error: ' + (r.error || 'No se pudo actualizar'));
+        }
+      } catch (e) {
+        alert('Error de red: ' + e.message);
+      }
+    });
+  </script>
+</body>
+</html>

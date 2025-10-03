@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Usuario</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+    .form-container { max-width: 600px; margin: 40px auto; background: white; padding: 25px; border: 1px solid #ddd; }
+    h2 { margin-bottom: 20px; color: #333; }
+    label { display: block; margin: 12px 0 4px; font-weight: bold; }
+    input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 20px; padding: 10px 20px; background: #0056b3; color: white; border: none; cursor: pointer; }
+    #mensaje { margin-top: 15px; padding: 10px; border-radius: 4px; }
+    .exito { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+    
+  </style>
+</head>
+<body>
+  <!--
+    Formulario para registrar nuevos usuarios.
+    Requisito: "Registro de usuarios" y "perfiles con información básica".
+  -->
+  <div class="form-container">
+    <h2>Registro de Usuario</h2>
+    <form id="formUsuario">
+      <label>Nombre completo *</label>
+      <input type="text" id="nombre_completo" required>
+      <label>Correo electrónico *</label>
+      <input type="email" id="email" required>
+      <label>Contraseña * (mínimo 6 caracteres)</label>
+      <input type="password" id="password" minlength="6" required>
+      <button type="submit">Registrar Usuario</button>
+    </form>
+    <div id="mensaje"></div>
+    <a href="index.html" style="color:#0056b3;">Regresar al inicio</a>
+  </div>
+
+  <script>
+    document.getElementById('formUsuario').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const datos = {
+        nombre_completo: document.getElementById('nombre_completo').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      };
+      try {
+        const res = await fetch('http://localhost/tienda_ropa/api/index.php?path=usuarios', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(datos)
+        });
+        const r = await res.json();
+        const m = document.getElementById('mensaje');
+        if (res.ok) {
+          m.className = 'exito';
+          m.textContent = r.mensaje;
+          document.getElementById('formUsuario').reset();
+        } else {
+          m.className = 'error';
+          m.textContent = r.error || 'Error en el registro';
+        }
+      } catch (err) {
+        document.getElementById('mensaje').className = 'error';
+        document.getElementById('mensaje').textContent = 'Error de red';
+      }
+    });
+  </script>
+</body>
+</html>
